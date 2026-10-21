@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start a Project — Dinesh Balaji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0D12;
+    --surface:#12161D;
+    --surface-2:#1A2029;
+    --border:#262D38;
+    --text:#E9ECF1;
+    --text-muted:#8B93A3;
+    --accent:#35E0C4;
+    --accent-2:#FF6B4A;
+    --accent-soft:rgba(53,224,196,0.12);
+    --accent-2-soft:rgba(255,107,74,0.12);
+    --radius:14px;
+    --maxw:1180px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  a{color:inherit; text-decoration:none;}
+
+  ::selection{background:var(--accent); color:#08110E;}
+
+  :focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  .bg-grid{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    backdrop-filter:blur(14px);
+    background:rgba(10,13,18,0.7);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 32px;
+    max-width:var(--maxw);
+    margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:0.02em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{
+    width:8px; height:8px; border-radius:2px;
+    background:var(--accent);
+    box-shadow:0 0 12px var(--accent);
+  }
+  .back-link{
+    font-family:var(--font-mono);
+    font-size:0.82rem;
+    color:var(--text-muted);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:color 0.2s ease;
+  }
+  .back-link:hover, .back-link:focus-visible{color:var(--text);}
+
+  main{
+    position:relative;
+    z-index:1;
+    padding:150px 0 100px;
+  }
+
+  .contact-layout{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:64px;
+    align-items:flex-start;
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    color:var(--accent);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px; height:1px;
+    background:var(--accent);
+  }
+
+  h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2rem, 3.4vw, 2.8rem);
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    margin-bottom:20px;
+  }
+
+  .intro-copy p{
+    color:var(--text-muted);
+    font-size:1.02rem;
+    max-width:400px;
+    margin-bottom:28px;
+  }
+
+  .btn{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:0.94rem;
+    padding:14px 26px;
+    border-radius:9px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    transition:transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .btn-whatsapp{
+    background:#25D366;
+    color:#06110D;
+    margin-bottom:32px;
+  }
+  .btn-whatsapp:hover, .btn-whatsapp:focus-visible{
+    box-shadow:0 8px 28px rgba(37,211,102,0.3);
+    transform:translateY(-1px);
+  }
+
+  .info-block{
+    border-top:1px solid var(--border);
+    padding-top:22px;
+    margin-top:36px;
+  }
+  .info-block h3{
+    font-family:var(--font-mono);
+    font-size:0.76rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-muted);
+    margin-bottom:10px;
+  }
+  .info-block a, .info-block p{
+    font-size:0.98rem;
+  }
+  .info-block a{
+    color:var(--accent);
+  }
+  .info-block + .info-block{margin-top:20px; padding-top:20px;}
+
+  .duet-mini{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:40px;
+  }
+  .duet-mini .chip{
+    width:34px; height:34px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--font-mono);
+    font-size:0.7rem;
+    color:var(--accent);
+  }
+  .duet-mini span.txt{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    color:var(--text-muted);
+  }
+
+  /* Form */
+  .form-panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:40px;
+  }
+
+  .form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+
+  .field{
+    margin-bottom:22px;
+  }
+  .field label{
+    display:block;
+    font-family:var(--font-mono);
+    font-size:0.76rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-muted);
+    margin-bottom:9px;
+  }
+  .field input,
+  .field textarea,
+  .field select{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:0.95rem;
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder{
+    color:#5B6472;
+  }
+  .field input:hover,
+  .field textarea:hover,
+  .field select:hover{
+    border-color:#3A4351;
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus{
+    outline:none;
+    border-color:var(--accent);
+    background:var(--surface-2);
+  }
+  .field textarea{
+    resize:vertical;
+    min-height:120px;
+  }
+  .field select{
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B93A3' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    padding-right:36px;
+    cursor:pointer;
+  }
+
+  .submit-btn{
+    width:100%;
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:0.98rem;
+    padding:15px 26px;
+    border-radius:9px;
+    border:none;
+    background:var(--accent);
+    color:#06110D;
+    cursor:pointer;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top:6px;
+  }
+  .submit-btn:hover, .submit-btn:focus-visible{
+    box-shadow:0 8px 28px rgba(53,224,196,0.28);
+    transform:translateY(-1px);
+  }
+  .submit-btn:disabled{
+    opacity:0.6;
+    cursor:default;
+    transform:none;
+    box-shadow:none;
+  }
+
+  .form-note{
+    font-size:0.82rem;
+    color:var(--text-muted);
+    margin-top:14px;
+    text-align:center;
+  }
+
+  .success-panel{
+    display:none;
+    text-align:center;
+    padding:40px 10px;
+  }
+  .success-panel.visible{display:block;}
+  .form-panel.hidden-form{display:none;}
+  .success-check{
+    width:52px; height:52px;
+    border-radius:50%;
+    border:1px solid var(--accent);
+    background:var(--accent-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 20px;
+    color:var(--accent);
+    font-size:1.3rem;
+  }
+  .success-panel h3{
+    font-family:var(--font-display);
+    font-size:1.3rem;
+    margin-bottom:10px;
+  }
+  .success-panel p{
+    color:var(--text-muted);
+    font-size:0.95rem;
+    max-width:340px;
+    margin:0 auto;
+  }
+
+  footer{
+    border-top:1px solid var(--border);
+    padding:32px 0;
+    position:relative;
+    z-index:1;
+  }
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    font-size:0.85rem;
+    color:var(--text-muted);
+  }
+
+  @media (max-width: 880px){
+    .contact-layout{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    .form-panel{padding:28px;}
+    main{padding-top:130px;}
+  }
+  @media (max-width: 520px){
+    .wrap{padding:0 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="logo"><span class="dot"></span>Dinesh Balaji</a>
+    <a href="index.html" class="back-link">← Back to site</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="contact-layout">
+
+      <div class="intro-copy">
+        <div class="eyebrow">Start a project</div>
+        <h1>Tell me about what you're building.</h1>
+        <p>A few details up front means I can come back with something useful — rough scope, timeline, and whether it's the right fit — instead of a generic reply.</p>
+
+        <a href="https://wa.me/919952069887" target="_blank" rel="noopener" class="btn btn-whatsapp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.21h.005c5.46 0 9.91-4.45 9.91-9.91C21.97 6.45 17.5 2 12.04 2zm5.8 14.09c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-2.99 0-1.42.75-2.12 1.02-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2 .9 2.14.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.61-.07.16-.19.7-.81.89-1.09.19-.28.37-.23.62-.14.26.09 1.64.77 1.92.91.28.14.47.21.53.33.07.12.07.68-.17 1.36z"/></svg>
+          Message via WhatsApp
+        </a>
+
+        <div class="info-block">
+          <h3>Email directly</h3>
+          <a href="mailto:dineshbalajinp@gmail.com">dineshbalajinp@gmail.com</a>
+        </div>
+        <div class="info-block">
+          <h3>Response time</h3>
+          <p style="color:var(--text-muted);">Usually within one business day.</p>
+        </div>
+
+        <div class="duet-mini" aria-hidden="true">
+          <div class="chip">&lt;/&gt;</div>
+          <div class="chip">app</div>
+          <span class="txt">web + mobile, one point of contact</span>
+        </div>
+      </div>
+
+      <div class="form-wrapper">
+        <form class="form-panel" id="projectForm" action="https://formspree.io/f/xrenqryw" method="POST" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Jane Rivera" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="jane@company.com" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="company">Company or project name <span style="opacity:0.6;">(optional)</span></label>
+            <input type="text" id="company" name="company" placeholder="Acme Studio">
+          </div>
+
+          <div class="field">
+            <label for="projectType">Project type</label>
+            <select id="projectType" name="projectType" required>
+              <option value="" disabled selected>Select one</option>
+              <option value="website">Website</option>
+              <option value="web-app">Web application</option>
+              <option value="mobile-app">Mobile app (iOS / Android)</option>
+              <option value="both">Web + mobile</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="details">Project details</label>
+            <textarea id="details" name="details" placeholder="What are you building, and what's the timeline?" required></textarea>
+          </div>
+
+          <input type="hidden" name="_subject" value="New project inquiry from your site">
+
+          <button type="submit" class="submit-btn" id="submitBtn">Send project details</button>
+          <p class="form-note" id="formNote"></p>
+        </form>
+
+        <div class="success-panel" id="successPanel">
+          <div class="success-check">✓</div>
+          <h3>Thanks — got it.</h3>
+          <p>I'll take a look and get back to you within a business day at the email you provided.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <span>© 2026 Dinesh Balaji. All rights reserved.</span>
+    <a href="index.html" class="back-link">← Back to site</a>
+  </div>
+</footer>
+
+<script>
+  const form = document.getElementById('projectForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successPanel = document.getElementById('successPanel');
+  const formNote = document.getElementById('formNote');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    try{
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if(response.ok){
+        form.classList.add('hidden-form');
+        successPanel.classList.add('visible');
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send project details';
+        formNote.textContent = "Something went wrong — please email me directly instead.";
+        formNote.style.color = 'var(--accent-2)';
+      }
+    } catch(err){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send project details';
+      formNote.textContent = "Couldn't reach the server — please email me directly instead.";
+      formNote.style.color = 'var(--accent-2)';
+    }
+  });
+</script>
+
+</body>
+</html>

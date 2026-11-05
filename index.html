@@ -519,6 +519,37 @@
     font-size:0.92rem;
   }
 
+  /* ---------- Featured project ---------- */
+  .project-feature{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    transition:border-color 0.25s ease;
+  }
+  .project-feature:hover{border-color:var(--accent);}
+  .project-info{padding:44px 40px; display:flex; flex-direction:column; align-items:flex-start;}
+  .project-info .work-tags{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+  .project-info .work-tags span{font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;}
+  .project-info .work-tags span:not(:last-child)::after{content:'/'; margin-left:8px; color:var(--border);}
+  .project-info h3{font-family:var(--font-display); font-size:1.7rem; line-height:1.2; margin-bottom:14px;}
+  .project-info p{color:var(--text-muted); margin-bottom:26px; max-width:460px;}
+  .project-visual{
+    background:linear-gradient(135deg, rgba(53,224,196,0.10), rgba(255,107,74,0.10));
+    display:flex; align-items:center; justify-content:center; gap:16px; padding:36px; min-height:280px;
+  }
+  .pv-web{width:56%; background:var(--bg); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .pv-web .pv-bar{height:18px; background:var(--surface-2); border-bottom:1px solid var(--border);}
+  .pv-web .pv-body{padding:12px; display:flex; flex-direction:column; gap:8px; height:120px;}
+  .pv-web .pv-body span{height:8px; border-radius:4px; background:var(--surface-2);}
+  .pv-web .pv-body span:first-child{width:50%; background:var(--accent-soft);}
+  .pv-web .pv-body span:nth-child(2){width:85%;}
+  .pv-phone{width:26%; aspect-ratio:9/18; background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:8px; display:flex; flex-direction:column; gap:6px;}
+  .pv-phone span{height:14%; border-radius:5px; background:var(--accent-2-soft);}
+  .pv-phone span:nth-child(2){background:var(--accent-soft);}
+
   /* ---------- Process ---------- */
   .process-list{
     display:grid;
@@ -649,6 +680,8 @@
     .services-grid{grid-template-columns:1fr;}
     .work-grid{grid-template-columns:1fr;}
     .process-list{grid-template-columns:1fr 1fr;}
+    .project-feature{grid-template-columns:1fr;}
+    .project-info{padding:32px 26px;}
     .process-item{border-right:none;}
     .process-item:nth-child(odd){border-right:1px solid var(--border);}
     .about{grid-template-columns:1fr;}
@@ -671,6 +704,7 @@
     <a href="#top" class="logo"><span class="dot"></span>Dinesh Balaji</a>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#process">Process</a></li>
       <li><a href="#about">About</a></li>
     </ul>
@@ -770,6 +804,27 @@
           <p>Monthly retainers for updates, monitoring, and small features once your product is live.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Featured project</h2>
+        <p>A complete web and mobile system, designed and built end to end.</p>
+      </div>
+      <a href="kindergarten.html" class="project-feature">
+        <div class="project-info">
+          <div class="work-tags"><span>Web</span><span>Android</span><span>Education</span></div>
+          <h3>Kindergarten Management System</h3>
+          <p>An admin web portal, a teacher app and a parent app on one connected platform — attendance, daily updates, photos, fees and messaging.</p>
+          <span class="btn btn-primary">View project →</span>
+        </div>
+        <div class="project-visual" aria-hidden="true">
+          <div class="pv-web"><div class="pv-bar"></div><div class="pv-body"><span></span><span></span><span></span></div></div>
+          <div class="pv-phone"><span></span><span></span><span></span></div>
+        </div>
+      </a>
     </div>
   </section>
 

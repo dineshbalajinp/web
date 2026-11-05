@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kindergarten Management System — Dinesh Balaji</title>
+<meta name="description" content="A web and mobile kindergarten management system: admin web portal, teacher app and parent app.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0D12;
+    --surface:#12161D;
+    --surface-2:#1A2029;
+    --border:#262D38;
+    --text:#E9ECF1;
+    --text-muted:#8B93A3;
+    --accent:#35E0C4;
+    --accent-2:#FF6B4A;
+    --accent-soft:rgba(53,224,196,0.12);
+    --accent-2-soft:rgba(255,107,74,0.12);
+    --radius:14px;
+    --maxw:1180px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  ul{list-style:none;}
+  button{font:inherit; color:inherit; background:none; border:none; cursor:pointer;}
+  ::selection{background:var(--accent); color:#08110E;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 32px;}
+
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  /* Header */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    backdrop-filter:blur(14px);
+    background:rgba(10,13,18,0.7);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px; max-width:var(--maxw); margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-display); font-weight:700; font-size:1.15rem;
+    letter-spacing:0.02em; display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{width:8px; height:8px; border-radius:2px; background:var(--accent); box-shadow:0 0 12px var(--accent);}
+  .nav-links{display:flex; gap:30px; font-size:0.92rem; color:var(--text-muted);}
+  .nav-links a{transition:color .2s ease;}
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-cta{
+    font-family:var(--font-mono); font-size:0.82rem; padding:9px 18px;
+    border:1px solid var(--border); border-radius:8px; white-space:nowrap;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .nav-cta:hover, .nav-cta:focus-visible{border-color:var(--accent); background:var(--accent-soft);}
+
+  main{position:relative; z-index:1;}
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.8rem; color:var(--accent);
+    letter-spacing:0.08em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--accent);}
+
+  .btn{
+    font-family:var(--font-body); font-weight:600; font-size:0.94rem;
+    padding:14px 26px; border-radius:9px;
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn svg{flex:none;}
+  .btn-primary{background:var(--accent); color:#06110D;}
+  .btn-primary:hover, .btn-primary:focus-visible{box-shadow:0 8px 28px rgba(53,224,196,0.28); transform:translateY(-1px);}
+  .btn-coral{background:var(--accent-2); color:#1A0903;}
+  .btn-coral:hover, .btn-coral:focus-visible{box-shadow:0 8px 28px rgba(255,107,74,0.28); transform:translateY(-1px);}
+  .btn-ghost{border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover, .btn-ghost:focus-visible{border-color:var(--text-muted); background:var(--surface);}
+
+  /* Hero */
+  .hero{
+    padding:164px 0 96px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  .crumb{
+    font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);
+    margin-bottom:26px; display:flex; gap:8px; align-items:center;
+  }
+  .crumb a:hover{color:var(--text);}
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(2.2rem, 4.2vw, 3.3rem); line-height:1.1; letter-spacing:-0.01em;
+    margin-bottom:22px;
+  }
+  h1 .accent-text{color:var(--accent);}
+  .hero-lede{font-size:1.06rem; color:var(--text-muted); max-width:520px; margin-bottom:34px;}
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:40px;}
+  .platform-pills{display:flex; gap:8px; flex-wrap:wrap;}
+  .pill{
+    font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);
+    border:1px solid var(--border); padding:5px 12px; border-radius:999px;
+  }
+
+  /* Hero visual: dashboard + phone */
+  .duet{position:relative; height:420px;}
+  .dash{
+    position:absolute; left:0; top:20px; width:400px;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,.55);
+    animation:float1 7s ease-in-out infinite;
+  }
+  .dash-bar{display:flex; align-items:center; gap:6px; padding:10px 14px; background:var(--surface-2); border-bottom:1px solid var(--border);}
+  .dash-bar i{width:9px; height:9px; border-radius:50%; display:block;}
+  .dash-bar i:nth-child(1){background:#FF6B5A;}
+  .dash-bar i:nth-child(2){background:#FFC53D;}
+  .dash-bar i:nth-child(3){background:#35E0C4;}
+  .dash-body{display:grid; grid-template-columns:78px 1fr; min-height:250px;}
+  .dash-side{border-right:1px solid var(--border); padding:14px 10px; display:flex; flex-direction:column; gap:10px;}
+  .dash-side span{height:8px; border-radius:4px; background:var(--surface-2);}
+  .dash-side span:first-child{background:var(--accent-soft);}
+  .dash-main{padding:16px; display:flex; flex-direction:column; gap:12px;}
+  .stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .stat{border:1px solid var(--border); border-radius:8px; padding:10px; background:var(--bg);}
+  .stat b{display:block; font-family:var(--font-display); font-size:1.15rem;}
+  .stat small{font-family:var(--font-mono); font-size:0.62rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em;}
+  .bars{flex:1; display:flex; align-items:flex-end; gap:8px; border:1px solid var(--border); border-radius:8px; padding:12px; background:var(--bg); min-height:90px;}
+  .bars span{flex:1; border-radius:4px 4px 0 0; background:linear-gradient(to top, var(--accent-soft), var(--accent));}
+  .phone{
+    position:absolute; right:6px; bottom:0; width:190px; height:380px;
+    background:var(--surface); border:1px solid var(--border); border-radius:30px; padding:10px;
+    box-shadow:0 30px 70px rgba(0,0,0,.6);
+    animation:float2 8s ease-in-out infinite;
+  }
+  .phone::before{content:''; position:absolute; top:10px; left:50%; transform:translateX(-50%); width:60px; height:15px; border-radius:10px; background:var(--bg); z-index:2;}
+  .phone-screen{background:var(--surface-2); border-radius:22px; height:100%; padding:28px 12px 12px; display:flex; flex-direction:column; gap:10px;}
+  .p-head{height:10px; width:55%; border-radius:4px; background:var(--accent-2-soft);}
+  .p-card{height:56px; border-radius:10px; border:1px solid var(--border); background:linear-gradient(135deg, var(--accent-2-soft), transparent);}
+  .p-card.mint{background:linear-gradient(135deg, var(--accent-soft), transparent);}
+  .p-line{height:8px; border-radius:4px; background:var(--border);}
+  .p-line.s{width:65%;}
+  @keyframes float1{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  @keyframes float2{0%,100%{transform:translateY(0);}50%{transform:translateY(10px);}}
+
+  /* Sections */
+  section{padding:96px 0; border-top:1px solid var(--border);}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:48px; flex-wrap:wrap;}
+  .section-head h2{font-family:var(--font-display); font-weight:600; font-size:clamp(1.7rem,2.6vw,2.2rem); letter-spacing:-0.01em;}
+  .section-head p{color:var(--text-muted); max-width:440px; font-size:0.98rem;}
+
+  /* Overview */
+  .overview{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+  .overview p{color:var(--text-muted); margin-bottom:16px;}
+  .overview p strong{color:var(--text); font-weight:600;}
+  .facts{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; align-self:start;}
+  .fact{background:var(--bg); padding:24px;}
+  .fact small{font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; display:block; margin-bottom:6px;}
+  .fact b{font-family:var(--font-display); font-weight:600; font-size:1.05rem;}
+
+  /* Platforms */
+  .platforms{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .platform{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:30px 28px; display:flex; flex-direction:column; transition:border-color .25s ease, transform .25s ease;
+  }
+  .platform:hover{transform:translateY(-3px);}
+  .platform.web:hover{border-color:var(--text-muted);}
+  .platform.teacher:hover{border-color:var(--accent);}
+  .platform.parent:hover{border-color:var(--accent-2);}
+  .tag{
+    font-family:var(--font-mono); font-size:0.72rem; text-transform:uppercase; letter-spacing:.06em;
+    width:fit-content; padding:4px 10px; border-radius:6px; border:1px solid var(--border); margin-bottom:18px; color:var(--text-muted);
+  }
+  .teacher .tag{color:var(--accent); background:var(--accent-soft); border-color:transparent;}
+  .parent .tag{color:var(--accent-2); background:var(--accent-2-soft); border-color:transparent;}
+  .platform h3{font-family:var(--font-display); font-size:1.25rem; margin-bottom:8px;}
+  .platform > p{color:var(--text-muted); font-size:0.92rem; margin-bottom:20px;}
+  .platform ul{display:flex; flex-direction:column; gap:10px; margin-top:auto; border-top:1px solid var(--border); padding-top:18px;}
+  .platform li{font-size:0.9rem; padding-left:22px; position:relative;}
+  .platform li::before{content:''; position:absolute; left:0; top:0.55em; width:10px; height:1px; background:var(--text-muted);}
+  .teacher li::before{background:var(--accent);}
+  .parent li::before{background:var(--accent-2);}
+
+  /* Gallery */
+  .tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;}
+  .tab{
+    font-family:var(--font-mono); font-size:0.82rem; padding:9px 18px;
+    border:1px solid var(--border); border-radius:999px; color:var(--text-muted);
+    transition:all .2s ease;
+  }
+  .tab:hover{color:var(--text); border-color:var(--text-muted);}
+  .tab[aria-selected="true"]{color:var(--accent); border-color:var(--accent); background:var(--accent-soft);}
+  .gallery{display:none; grid-gap:18px;}
+  .gallery.active{display:grid;}
+  .gallery.landscape{grid-template-columns:repeat(3,1fr);}
+  .gallery.portrait{grid-template-columns:repeat(4,1fr);}
+  .shot{
+    position:relative; display:block; width:100%;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    transition:border-color .2s ease, transform .2s ease; text-align:left;
+  }
+  .landscape .shot{aspect-ratio:16/10;}
+  .portrait .shot{aspect-ratio:9/18;}
+  .shot:hover{border-color:var(--accent); transform:translateY(-3px);}
+  .shot img{width:100%; height:100%; object-fit:cover;}
+  .shot .cap{
+    position:absolute; left:0; right:0; bottom:0; padding:28px 14px 12px;
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--text);
+    background:linear-gradient(to top, rgba(10,13,18,.9), transparent);
+  }
+  .shot .empty{
+    display:none; position:absolute; inset:0; padding:18px;
+    flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 10px, transparent 10px 20px),
+      var(--surface);
+  }
+  .shot .empty b{font-family:var(--font-display); font-weight:600; font-size:0.95rem;}
+  .shot .empty code{font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); word-break:break-all;}
+  .shot.missing img, .shot.missing .cap{display:none;}
+  .shot.missing .empty{display:flex;}
+  .shot.missing{cursor:default;}
+  .shot.missing:hover{transform:none; border-color:var(--border);}
+
+  /* Lightbox */
+  .lightbox{
+    position:fixed; inset:0; z-index:300; display:none;
+    background:rgba(5,7,10,.92); backdrop-filter:blur(6px);
+    align-items:center; justify-content:center; padding:56px 20px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox figure{max-width:min(1100px,100%); max-height:100%; display:flex; flex-direction:column; align-items:center; gap:14px;}
+  .lightbox img{max-height:calc(100vh - 160px); width:auto; max-width:100%; border-radius:10px; border:1px solid var(--border);}
+  .lightbox figcaption{font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);}
+  .lb-btn{
+    position:absolute; width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--border); background:var(--surface);
+    display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+    transition:border-color .2s ease;
+  }
+  .lb-btn:hover{border-color:var(--accent);}
+  .lb-close{top:18px; right:18px;}
+  .lb-prev{left:18px; top:50%; transform:translateY(-50%);}
+  .lb-next{right:18px; top:50%; transform:translateY(-50%);}
+
+  /* Downloads */
+  .downloads{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .dl-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:34px 32px; display:flex; flex-direction:column; gap:14px;
+  }
+  .dl-icon{
+    width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--border); margin-bottom:6px;
+  }
+  .dl-card.teacher .dl-icon{background:var(--accent-soft); color:var(--accent); border-color:transparent;}
+  .dl-card.parent .dl-icon{background:var(--accent-2-soft); color:var(--accent-2); border-color:transparent;}
+  .dl-card h3{font-family:var(--font-display); font-size:1.35rem;}
+  .dl-card p{color:var(--text-muted); font-size:0.94rem;}
+  .dl-meta{font-family:var(--font-mono); font-size:0.74rem; color:var(--text-muted); display:flex; gap:16px; flex-wrap:wrap;}
+  .dl-card .btn{margin-top:10px; width:100%;}
+  .dl-note{margin-top:22px; font-size:0.85rem; color:var(--text-muted);}
+
+  /* CTA */
+  .cta{text-align:center;}
+  .cta h2{font-family:var(--font-display); font-size:clamp(1.9rem,3.6vw,2.7rem); font-weight:700; max-width:660px; margin:0 auto 18px; letter-spacing:-0.01em;}
+  .cta p{color:var(--text-muted); max-width:480px; margin:0 auto 34px;}
+  .cta-actions{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+
+  footer{border-top:1px solid var(--border); padding:32px 0; position:relative; z-index:1;}
+  .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; font-size:0.85rem; color:var(--text-muted);}
+  .footer-row a:hover{color:var(--text);}
+
+  @media (max-width:980px){
+    .gallery.portrait{grid-template-columns:repeat(2,1fr);}
+    .gallery.landscape{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:880px){
+    .nav-links{display:none;}
+    .hero{grid-template-columns:1fr; padding-top:132px;}
+    .duet{height:380px;}
+    .dash{width:78%;}
+    .phone{width:160px; height:320px;}
+    .overview{grid-template-columns:1fr;}
+    .platforms{grid-template-columns:1fr;}
+    .downloads{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){
+    .wrap{padding:0 20px;}
+    .nav{padding:16px 20px;}
+    .hero-ctas .btn{width:100%;}
+    .gallery.landscape{grid-template-columns:1fr;}
+    .facts{grid-template-columns:1fr;}
+    section{padding:72px 0;}
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="logo"><span class="dot"></span>Dinesh Balaji</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#gallery">Screenshots</a></li>
+      <li><a href="#download">Download</a></li>
+    </ul>
+    <a href="contact.html" class="nav-cta">Start a project →</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="crumb"><a href="index.html">Home</a><span>/</span><span>Projects</span><span>/</span><span>Kindergarten Management System</span></div>
+        <div class="eyebrow">Case study · Web + Mobile</div>
+        <h1>Kindergarten Management System — <span class="accent-text">one platform for school, teachers and parents.</span></h1>
+        <p class="hero-lede">A web admin portal for school management, a teacher app for the classroom, and a parent app that keeps families in the loop — all connected to the same data.</p>
+        <div class="hero-ctas">
+          <a href="#download" class="btn btn-coral">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+            Parent app
+          </a>
+          <a href="#download" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+            Teacher app
+          </a>
+          <a href="#gallery" class="btn btn-ghost">View screenshots</a>
+        </div>
+        <div class="platform-pills">
+          <span class="pill">Web admin portal</span>
+          <span class="pill">Teacher app</span>
+          <span class="pill">Parent app</span>
+        </div>
+      </div>
+
+      <div class="duet" aria-hidden="true">
+        <div class="dash">
+          <div class="dash-bar"><i></i><i></i><i></i></div>
+          <div class="dash-body">
+            <div class="dash-side"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="dash-main">
+              <div class="stat-row">
+                <div class="stat"><b>128</b><small>Students</small></div>
+                <div class="stat"><b>12</b><small>Teachers</small></div>
+                <div class="stat"><b>96%</b><small>Present</small></div>
+              </div>
+              <div class="bars">
+                <span style="height:55%"></span><span style="height:72%"></span><span style="height:64%"></span>
+                <span style="height:88%"></span><span style="height:70%"></span><span style="height:94%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="p-head"></div>
+            <div class="p-card"></div>
+            <div class="p-card mint"></div>
+            <div class="p-line"></div>
+            <div class="p-line s"></div>
+            <div class="p-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>About the tool</h2>
+        <p>Running a kindergarten means juggling attendance, daily updates, fees and constant parent questions. This system puts it all in one place.</p>
+      </div>
+      <div class="overview">
+        <div>
+          <p><strong>The problem.</strong> Paper registers, WhatsApp groups and scattered spreadsheets make it hard for schools to keep records accurate and for parents to know what their child did today.</p>
+          <p><strong>The solution.</strong> A single system with three connected parts: administrators manage the school on the web, teachers record the day from their phones, and parents see updates the moment they happen.</p>
+          <p><strong>Web and mobile, in sync.</strong> Everything a teacher enters in the app appears in the admin portal and in the parent app — no double entry, no lost notes.</p>
+        </div>
+        <div class="facts">
+          <div class="fact"><small>Platforms</small><b>Web + Android</b></div>
+          <div class="fact"><small>User roles</small><b>Admin · Teacher · Parent</b></div>
+          <div class="fact"><small>Built for</small><b>Kindergartens &amp; preschools</b></div>
+          <div class="fact"><small>My role</small><b>Design &amp; development</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORMS -->
+  <section id="platforms">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Three apps, one system</h2>
+        <p>Each role gets an interface built around what they actually need to do.</p>
+      </div>
+      <div class="platforms">
+        <article class="platform web">
+          <div class="tag">Web</div>
+          <h3>Admin web portal</h3>
+          <p>The control centre for school management, used from any browser on desktop or tablet.</p>
+          <ul>
+            <li>Student admission and profiles</li>
+            <li>Class and teacher management</li>
+            <li>Attendance and reports</li>
+            <li>Fee tracking and receipts</li>
+            <li>Announcements and events</li>
+          </ul>
+        </article>
+        <article class="platform teacher">
+          <div class="tag">Mobile · Teacher</div>
+          <h3>Teacher app</h3>
+          <p>Fast, tap-friendly tools for the classroom so paperwork never gets in the way of teaching.</p>
+          <ul>
+            <li>One-tap daily attendance</li>
+            <li>Daily activity and meal notes</li>
+            <li>Share photos with parents</li>
+            <li>Homework and notices</li>
+            <li>Direct messages to parents</li>
+          </ul>
+        </article>
+        <article class="platform parent">
+          <div class="tag">Mobile · Parent</div>
+          <h3>Parent app</h3>
+          <p>A simple window into the child's day, with instant notifications from school.</p>
+          <ul>
+            <li>Daily attendance and activity feed</li>
+            <li>Photos from the classroom</li>
+            <li>Fee dues and payment history</li>
+            <li>School announcements and events</li>
+            <li>Chat with the class teacher</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Screenshots</h2>
+        <p>Tap any screenshot to view it full size.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Screenshot category">
+        <button class="tab" role="tab" aria-selected="true" data-target="g-web">Web portal</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="g-teacher">Teacher app</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="g-parent">Parent app</button>
+      </div>
+
+      <!-- Web: add images/web-1.png ... web-6.png -->
+      <div class="gallery landscape active" id="g-web">
+        <button class="shot" data-full="images/web-1.png" data-caption="Web portal · Dashboard">
+          <img src="images/web-1.png" alt="Web portal dashboard" loading="lazy">
+          <span class="cap">Dashboard</span>
+          <span class="empty"><b>Dashboard</b><code>images/web-1.png</code></span>
+        </button>
+        <button class="shot" data-full="images/web-2.png" data-caption="Web portal · Students">
+          <img src="images/web-2.png" alt="Web portal student list" loading="lazy">
+          <span class="cap">Students</span>
+          <span class="empty"><b>Students</b><code>images/web-2.png</code></span>
+        </button>
+        <button class="shot" data-full="images/web-3.png" data-caption="Web portal · Attendance">
+          <img src="images/web-3.png" alt="Web portal attendance" loading="lazy">
+          <span class="cap">Attendance</span>
+          <span class="empty"><b>Attendance</b><code>images/web-3.png</code></span>
+        </button>
+        <button class="shot" data-full="images/web-4.png" data-caption="Web portal · Classes">
+          <img src="images/web-4.png" alt="Web portal classes" loading="lazy">
+          <span class="cap">Classes</span>
+          <span class="empty"><b>Classes</b><code>images/web-4.png</code></span>
+        </button>
+        <button class="shot" data-full="images/web-5.png" data-caption="Web portal · Fees">
+          <img src="images/web-5.png" alt="Web portal fees" loading="lazy">
+          <span class="cap">Fees</span>
+          <span class="empty"><b>Fees</b><code>images/web-5.png</code></span>
+        </button>
+        <button class="shot" data-full="images/web-6.png" data-caption="Web portal · Reports">
+          <img src="images/web-6.png" alt="Web portal reports" loading="lazy">
+          <span class="cap">Reports</span>
+          <span class="empty"><b>Reports</b><code>images/web-6.png</code></span>
+        </button>
+      </div>
+
+      <!-- Teacher app: add images/teacher-1.png ... teacher-4.png -->
+      <div class="gallery portrait" id="g-teacher">
+        <button class="shot" data-full="images/teacher-1.png" data-caption="Teacher app · Home">
+          <img src="images/teacher-1.png" alt="Teacher app home" loading="lazy">
+          <span class="cap">Home</span>
+          <span class="empty"><b>Home</b><code>images/teacher-1.png</code></span>
+        </button>
+        <button class="shot" data-full="images/teacher-2.png" data-caption="Teacher app · Attendance">
+          <img src="images/teacher-2.png" alt="Teacher app attendance" loading="lazy">
+          <span class="cap">Attendance</span>
+          <span class="empty"><b>Attendance</b><code>images/teacher-2.png</code></span>
+        </button>
+        <button class="shot" data-full="images/teacher-3.png" data-caption="Teacher app · Daily report">
+          <img src="images/teacher-3.png" alt="Teacher app daily report" loading="lazy">
+          <span class="cap">Daily report</span>
+          <span class="empty"><b>Daily report</b><code>images/teacher-3.png</code></span>
+        </button>
+        <button class="shot" data-full="images/teacher-4.png" data-caption="Teacher app · Messages">
+          <img src="images/teacher-4.png" alt="Teacher app messages" loading="lazy">
+          <span class="cap">Messages</span>
+          <span class="empty"><b>Messages</b><code>images/teacher-4.png</code></span>
+        </button>
+      </div>
+
+      <!-- Parent app: add images/parent-1.png ... parent-4.png -->
+      <div class="gallery portrait" id="g-parent">
+        <button class="shot" data-full="images/parent-1.png" data-caption="Parent app · Home">
+          <img src="images/parent-1.png" alt="Parent app home" loading="lazy">
+          <span class="cap">Home</span>
+          <span class="empty"><b>Home</b><code>images/parent-1.png</code></span>
+        </button>
+        <button class="shot" data-full="images/parent-2.png" data-caption="Parent app · Daily updates">
+          <img src="images/parent-2.png" alt="Parent app daily updates" loading="lazy">
+          <span class="cap">Daily updates</span>
+          <span class="empty"><b>Daily updates</b><code>images/parent-2.png</code></span>
+        </button>
+        <button class="shot" data-full="images/parent-3.png" data-caption="Parent app · Fees">
+          <img src="images/parent-3.png" alt="Parent app fees" loading="lazy">
+          <span class="cap">Fees</span>
+          <span class="empty"><b>Fees</b><code>images/parent-3.png</code></span>
+        </button>
+        <button class="shot" data-full="images/parent-4.png" data-caption="Parent app · Chat">
+          <img src="images/parent-4.png" alt="Parent app chat" loading="lazy">
+          <span class="cap">Chat</span>
+          <span class="empty"><b>Chat</b><code>images/parent-4.png</code></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section id="download">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Download the apps</h2>
+        <p>Install the app for your role. The web portal is used by school administrators and is set up per school.</p>
+      </div>
+      <div class="downloads">
+        <article class="dl-card parent">
+          <div class="dl-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M21 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Parent app</h3>
+          <p>Follow your child's day, see photos, check fees and chat with the teacher.</p>
+          <div class="dl-meta"><span>Android</span><span>APK</span></div>
+          <a class="btn btn-coral" href="downloads/parent-app.apk" download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+            Download parent app
+          </a>
+        </article>
+        <article class="dl-card teacher">
+          <div class="dl-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2.5 9 2.5 12 0v-5"/></svg>
+          </div>
+          <h3>Teacher app</h3>
+          <p>Take attendance, post daily reports, share photos and message parents.</p>
+          <div class="dl-meta"><span>Android</span><span>APK</span></div>
+          <a class="btn btn-primary" href="downloads/teacher-app.apk" download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>
+            Download teacher app
+          </a>
+        </article>
+      </div>
+      <p class="dl-note">To install an APK, allow “Install unknown apps” for your browser when Android asks. Need a login or a demo account? <a href="contact.html" style="color:var(--accent);">Get in touch</a>.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap">
+      <div class="eyebrow" style="justify-content:center;">Work with me</div>
+      <h2>Need a management system for your school or business?</h2>
+      <p>I design and build web and mobile systems like this one, from first sketch to launch.</p>
+      <div class="cta-actions">
+        <a href="contact.html" class="btn btn-primary">Start a project</a>
+        <a href="https://wa.me/919952069887" target="_blank" rel="noopener" class="btn btn-ghost">Message via WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <span>© 2026 Dinesh Balaji. All rights reserved.</span>
+    <a href="index.html">← Back to home</a>
+  </div>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot viewer">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous screenshot">‹</button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next screenshot">›</button>
+  <figure>
+    <img id="lbImg" src="" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+</div>
+
+<script>
+  // Tabs
+  const tabs = document.querySelectorAll('.tab');
+  const galleries = document.querySelectorAll('.gallery');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+      galleries.forEach(g => g.classList.toggle('active', g.id === tab.dataset.target));
+    });
+  });
+
+  // Missing screenshots show a placeholder instead of a broken image
+  document.querySelectorAll('.shot img').forEach(img => {
+    const shot = img.closest('.shot');
+    const markMissing = () => shot.classList.add('missing');
+    img.addEventListener('error', markMissing);
+    if (img.complete && img.naturalWidth === 0) markMissing();
+  });
+
+  // Lightbox
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCap = document.getElementById('lbCap');
+  let current = [];
+  let index = 0;
+  let lastFocus = null;
+
+  function show(i){
+    index = (i + current.length) % current.length;
+    const s = current[index];
+    lbImg.src = s.dataset.full;
+    lbImg.alt = s.dataset.caption || '';
+    lbCap.textContent = s.dataset.caption || '';
+  }
+  function openLb(shot){
+    if (shot.classList.contains('missing')) return;
+    const group = shot.closest('.gallery');
+    current = Array.from(group.querySelectorAll('.shot:not(.missing)'));
+    lastFocus = document.activeElement;
+    lb.classList.add('open');
+    show(current.indexOf(shot));
+    document.getElementById('lbClose').focus();
+  }
+  function closeLb(){
+    lb.classList.remove('open');
+    lbImg.src = '';
+    if (lastFocus) lastFocus.focus();
+  }
+  document.querySelectorAll('.shot').forEach(s => s.addEventListener('click', () => openLb(s)));
+  document.getElementById('lbClose').addEventListener('click', closeLb);
+  document.getElementById('lbPrev').addEventListener('click', () => show(index - 1));
+  document.getElementById('lbNext').addEventListener('click', () => show(index + 1));
+  lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+</script>
+</body>
+</html>
